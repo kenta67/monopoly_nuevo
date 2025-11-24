@@ -1,0 +1,13 @@
+{
+  "name": "monopoly-multiplayer-frontend",
+  "version": "1.0.0",
+  "description": "Frontend para Monopolio Multijugador",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build process required'",
+    "dev": "echo 'Open index.html in browser'"
+  },
+  "keywords": ["monopoly", "multiplayer", "game", "colyseus"],
+  "author": "Tu Nombre",
+  "license": "MIT"
+}

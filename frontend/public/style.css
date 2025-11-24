@@ -1,0 +1,537 @@
+:root {
+    --brown: #8B4513;
+    --lightblue: #87CEEB;
+    --pink: #FF69B4;
+    --orange: #FFA500;
+    --red: #FF0000;
+    --yellow: #FFFF00;
+    --green: #008000;
+    --darkblue: #000080;
+    --purple: #800080;
+    --board-bg: #f5e8c8;
+    --card-bg: #fff9e6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.header h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, gold, orange, gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+.game-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1400px;
+    width: 100%;
+}
+
+.board-container {
+    flex: 1;
+    min-width: 800px;
+    position: relative;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    gap: 2px;
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-color: var(--board-bg);
+    border: 3px solid #5d4037;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+.cell {
+    background-color: white;
+    border: 1px solid #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    padding: 3px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.corner {
+    background: linear-gradient(135deg, #d7ccc8, #bcaaa4);
+    font-weight: bold;
+    font-size: 12px;
+    justify-content: space-around;
+}
+
+.property {
+    border-left: 6px solid;
+    justify-content: space-between;
+    padding: 5px 3px;
+}
+
+.property-name {
+    font-weight: bold;
+    font-size: 9px;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.property-price {
+    font-size: 8px;
+    background: rgba(0,0,0,0.1);
+    padding: 1px 3px;
+    border-radius: 3px;
+}
+
+.player {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    border: 2px solid white;
+    z-index: 5;
+    transition: all 0.5s ease;
+}
+
+.player-1 { top: 2px; left: 2px; }
+.player-2 { top: 2px; right: 2px; }
+.player-3 { bottom: 2px; left: 2px; }
+.player-4 { bottom: 2px; right: 2px; }
+
+.controls-container {
+    flex: 0 0 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dice-container {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.dice {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.die {
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.die.rolling {
+    animation: roll 0.5s ease-in-out;
+}
+
+@keyframes roll {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg); }
+    50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    padding: 12px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:not(:disabled):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#roll-dice {
+    background: linear-gradient(to right, #4CAF50, #45a049);
+    color: white;
+}
+
+#end-turn {
+    background: linear-gradient(to right, #2196F3, #0b7dda);
+    color: white;
+}
+
+#buy-property {
+    background: linear-gradient(to right, #ff9800, #e68900);
+    color: white;
+}
+
+.info-panel {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.player-info, .property-info {
+    margin-bottom: 20px;
+}
+
+.player-info h3, .property-info h3 {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    color: #5d4037;
+}
+
+.player-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-left: 4px solid;
+}
+
+.player-card.current {
+    border: 2px solid gold;
+    box-shadow: 0 0 10px gold;
+}
+
+.player-card.disconnected {
+    opacity: 0.6;
+}
+
+.property-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-left: 6px solid;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.modal h2 {
+    color: #5d4037;
+    margin-bottom: 15px;
+}
+
+.modal p {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.modal button {
+    background: linear-gradient(to right, #5d4037, #8d6e63);
+    color: white;
+    padding: 10px 20px;
+}
+
+.character-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.character-option {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    background: #f5f5f5;
+}
+
+.character-option:hover {
+    transform: scale(1.1);
+    background: #e0e0e0;
+}
+
+.character-option.selected {
+    border-color: gold;
+    box-shadow: 0 0 15px gold;
+    background: #fff9e6;
+}
+
+.character-option span {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.player-token {
+    font-size: 24px;
+}
+
+.property-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.player-money {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.current-player-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: gold;
+    border-radius: 50%;
+    margin-left: 5px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.property-owned {
+    font-size: 10px;
+    background: rgba(0,0,0,0.1);
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-top: 2px;
+}
+
+.special-cell {
+    background: linear-gradient(135deg, #ffeb3b, #ffc107);
+    font-weight: bold;
+}
+
+.tax-cell {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+}
+
+.card-cell {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+}
+
+.railroad-cell {
+    background: linear-gradient(135deg, #795548, #5d4037);
+    color: white;
+}
+
+.utility-cell {
+    background: linear-gradient(135deg, #00bcd4, #0097a7);
+    color: white;
+}
+
+/* Estilos para la pantalla multijugador */
+.multiplayer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.option-group {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.option-group h3 {
+    margin-bottom: 10px;
+    color: #5d4037;
+}
+
+.option-btn {
+    width: 100%;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #5d4037, #8d6e63);
+    color: white;
+}
+
+.join-private {
+    display: flex;
+    gap: 10px;
+}
+
+#room-code {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #5d4037;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.loading-spinner {
+    margin: 20px 0;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #5d4037;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.player-name-input {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.player-name-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.player-name-input input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #5d4037;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.server-config {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.server-config label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.server-config input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #5d4037;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.server-config small {
+    color: #666;
+    font-size: 12px;
+}

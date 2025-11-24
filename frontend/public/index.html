@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopolio Mejorado - Multijugador</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/colyseus.js@0.15.0/dist/colyseus.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Pantalla de inicio multijugador -->
+    <div class="modal active" id="multiplayer-modal">
+        <div class="modal-content">
+            <h2>Monopolio Multijugador</h2>
+            <div class="server-config">
+                <label for="server-url">URL del Servidor:</label>
+                <input type="text" id="server-url" placeholder="ws://localhost:2567" value="wss://monopoly-server-production.up.railway.app">
+                <small>Cambia esta URL según donde tengas desplegado el servidor</small>
+                <button id="apply-server-config" class="option-btn">Aplicar Configuración</button>
+            </div>
+            <div class="multiplayer-options">
+                <div class="option-group">
+                    <h3>Crear Sala</h3>
+                    <button id="create-public-room" class="option-btn">
+                        <i class="fas fa-globe"></i> Sala Pública
+                    </button>
+                    <button id="create-private-room" class="option-btn">
+                        <i class="fas fa-lock"></i> Sala Privada
+                    </button>
+                </div>
+                <div class="option-group">
+                    <h3>Unirse a Sala</h3>
+                    <button id="join-public-room" class="option-btn">
+                        <i class="fas fa-users"></i> Unirse a Partida Pública
+                    </button>
+                    <div class="join-private">
+                        <input type="text" id="room-code" placeholder="Código de sala">
+                        <button id="join-private-room" class="option-btn">
+                            <i class="fas fa-key"></i> Unirse a Sala Privada
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="room-info" style="display: none; margin-top: 20px;">
+                <p id="room-id">ID de Sala: <span id="room-id-value"></span></p>
+                <button id="copy-room-id" class="option-btn">
+                    <i class="fas fa-copy"></i> Copiar Código
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de espera -->
+    <div class="modal" id="waiting-modal">
+        <div class="modal-content">
+            <h2>Esperando Jugadores</h2>
+            <div id="waiting-players">
+                <p>Conectados: <span id="connected-count">1</span>/4</p>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+                <p id="waiting-message">Esperando a que se unan más jugadores...</p>
+            </div>
+            <button id="start-anyway" class="option-btn" style="display: none;">
+                <i class="fas fa-play"></i> Iniciar de Todas Formas
+            </button>
+        </div>
+    </div>
+
+    <!-- Juego principal (oculto inicialmente) -->
+    <div id="game-container" style="display: none;">
+        <div class="header">
+            <h1><i class="fas fa-chess-king"></i> MONOPOLIO MULTIJUGADOR <i class="fas fa-chess-queen"></i></h1>
+            <p>Jugando en sala: <span id="current-room-id"></span></p>
+        </div>
+        
+        <div class="game-container">
+            <div class="board-container">
+                <div class="board" id="board">
+                    <!-- El tablero se generará con JavaScript -->
+                </div>
+            </div>
+            
+            <div class="controls-container">
+                <div class="dice-container">
+                    <h3>Lanzar Dados</h3>
+                    <div class="dice">
+                        <div class="die" id="die1">-</div>
+                        <div class="die" id="die2">-</div>
+                    </div>
+                    <div class="controls">
+                        <button id="roll-dice">
+                            <i class="fas fa-dice"></i> Lanzar Dados
+                        </button>
+                        <button id="end-turn" disabled>
+                            <i class="fas fa-forward"></i> Terminar Turno
+                        </button>
+                        <button id="buy-property" disabled>
+                            <i class="fas fa-shopping-cart"></i> Comprar Propiedad
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="info-panel">
+                    <div class="player-info" id="player-info">
+                        <!-- Información de jugadores -->
+                    </div>
+                    <div class="property-info" id="property-info">
+                        <!-- Información de propiedades -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de selección de personaje -->
+    <div class="modal" id="character-modal">
+        <div class="modal-content">
+            <h2>Selecciona tu personaje</h2>
+            <p>Elige un personaje para el juego:</p>
+            
+            <div class="character-selection">
+                <div class="character-option" data-character="dog">
+                    <i class="fas fa-dog"></i>
+                    <span>Perro</span>
+                </div>
+                <div class="character-option" data-character="cat">
+                    <i class="fas fa-cat"></i>
+                    <span>Gato</span>
+                </div>
+                <div class="character-option" data-character="car">
+                    <i class="fas fa-car"></i>
+                    <span>Coche</span>
+                </div>
+                <div class="character-option" data-character="hat">
+                    <i class="fas fa-hat-cowboy"></i>
+                    <span>Sombrero</span>
+                </div>
+                <div class="character-option" data-character="ship">
+                    <i class="fas fa-ship"></i>
+                    <span>Barco</span>
+                </div>
+                <div class="character-option" data-character="rocket">
+                    <i class="fas fa-rocket"></i>
+                    <span>Cohete</span>
+                </div>
+            </div>
+            
+            <div class="player-name-input">
+                <label for="player-name">Tu nombre:</label>
+                <input type="text" id="player-name" placeholder="Ingresa tu nombre" maxlength="15">
+            </div>
+            
+            <button id="select-character">
+                <i class="fas fa-check"></i> Confirmar Selección
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal de juego -->
+    <div class="modal" id="game-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Título</h2>
+            <p id="modal-message">Mensaje</p>
+            <button id="modal-close">Continuar</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
